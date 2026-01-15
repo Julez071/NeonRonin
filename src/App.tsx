@@ -74,7 +74,8 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen w-screen bg-terminal-bg text-neon-green overflow-hidden relative">
+
+    <div className="flex flex-col md:flex-row h-[100dvh] w-screen bg-terminal-bg text-neon-green overflow-hidden relative">
       {/* Intro Overlay */}
       {showIntro && (
         <div className="absolute inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
@@ -82,7 +83,7 @@ function App() {
             <h1 className="text-3xl font-bold tracking-widest text-neon-green glitch-effect">NEON-RONIN</h1>
             <div className="text-zinc-300 space-y-4 font-mono text-sm leading-relaxed">
               <p>It is 2084. Neo-Tokyo is a fortress of etiquette and steel.</p>
-              <p>You hold the <strong>SHARD</strong>. You must deliver it to the <strong>CORPORATE CITADEL</strong> (Shibuya Distinct). But you have no "Face".</p>
+              <p>You hold the <strong>SHARD</strong>. You must deliver it to the <strong>CORPORATE CITADEL</strong> (Shibuya Distinct). Be careful not to lose "Face" through bad etiquette.</p>
               <p><strong>MISSION:</strong><br />1. Eat at the Ramen Stand to recharge.<br />2. Take the Subway to Shibuya.<br />3. Infiltrate the Citadel.</p>
               <p className="text-xs text-zinc-500 pt-4">I am <strong>KAITO</strong>, your AI assistant. I will guide your <em>speech</em>. You must choose your <em>actions</em>.</p>
             </div>
@@ -96,19 +97,11 @@ function App() {
         </div>
       )}
 
-      {/* Sidebar */}
-      <div className="hidden md:block h-full">
-        <StatusPanel face={face} inventory={inventory} />
-      </div>
+      {/* Status Panel (Responsive: Top on mobile, Side on desktop) */}
+      <StatusPanel face={face} inventory={inventory} />
 
       {/* Main Area */}
-      <div className="flex-1 flex flex-col h-full relative">
-        {/* Mobile Header (Face only?) */}
-        <div className="md:hidden p-2 border-b border-zinc-800 bg-zinc-900 flex justify-between">
-          <span>FACE: {face}</span>
-          <span>INV: {inventory.length}</span>
-        </div>
-
+      <div className="flex-1 flex flex-col min-h-0 relative">
         <TerminalWindow history={history} />
 
         <InputConsole

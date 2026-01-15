@@ -10,7 +10,7 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ face, inventory }) => 
     const isLowFace = face < 30;
 
     return (
-        <div className="w-64 border-r border-none md:border-r md:border-zinc-800 bg-zinc-900/50 p-4 flex flex-col gap-6 h-full overflow-y-auto font-mono">
+        <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-zinc-800 bg-zinc-900/50 p-4 flex flex-row md:flex-col gap-4 md:gap-6 h-auto md:h-full overflow-y-auto font-mono text-sm md:text-base">
             {/* Face / Health Section */}
             <div className="space-y-2">
                 <div className="flex items-center gap-2 text-neon-green mb-2">
