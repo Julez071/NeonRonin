@@ -73,8 +73,42 @@ function App() {
     }
   };
 
-  return (
+  // Load State from LocalStorage on mount
+  const [hasSavedGame, setHasSavedGame] = useState(false);
 
+  useEffect(() => {
+    const saved = localStorage.getItem('neonRoninState');
+    if (saved) {
+      setHasSavedGame(true);
+    }
+  }, []);
+
+  const loadGame = () => {
+    const saved = localStorage.getItem('neonRoninState');
+    if (saved) {
+      const state = JSON.parse(saved);
+      setFace(state.face);
+      setInventory(state.inventory);
+      setHistory(state.history);
+      setShowIntro(false);
+    }
+  };
+
+  const startNewGame = () => {
+    // Clear specific state if needed, but default state is already set
+    localStorage.removeItem('neonRoninState');
+    setShowIntro(false);
+  };
+
+  // Auto-save on every state change (debounced effectively by react render cycle, but we can just save directly)
+  useEffect(() => {
+    if (!showIntro) {
+      const state = { face, inventory, history };
+      localStorage.setItem('neonRoninState', JSON.stringify(state));
+    }
+  }, [face, inventory, history, showIntro]);
+
+  return (
     <div className="flex flex-col md:flex-row h-[100dvh] w-screen bg-terminal-bg text-neon-green overflow-hidden relative">
       {/* Intro Overlay */}
       {showIntro && (
@@ -87,12 +121,24 @@ function App() {
               <p><strong>MISSION:</strong><br />1. Eat at the Ramen Stand to recharge.<br />2. Take the Subway to Shibuya.<br />3. Infiltrate the Citadel.</p>
               <p className="text-xs text-zinc-500 pt-4">I am <strong>KAITO</strong>, your AI assistant. I will guide your <em>speech</em>. You must choose your <em>actions</em>.</p>
             </div>
-            <button
-              onClick={() => setShowIntro(false)}
-              className="px-8 py-3 bg-neon-green text-black font-bold hover:bg-white transition-colors"
-            >
-              INITIALIZE LINK
-            </button>
+
+            <div className="flex flex-col gap-3 justify-center pt-4">
+              {hasSavedGame && (
+                <button
+                  onClick={loadGame}
+                  className="px-8 py-3 bg-zinc-800 border border-neon-green text-neon-green font-bold hover:bg-neon-green hover:text-black transition-colors"
+                >
+                  RESUME NEURAL LINK
+                </button>
+              )}
+              <button
+                onClick={startNewGame}
+                className="px-8 py-3 bg-neon-green text-black font-bold hover:bg-white transition-colors"
+              >
+                INITIALIZE NEW LINK
+              </button>
+            </div>
+
           </div>
         </div>
       )}
