@@ -52,7 +52,7 @@ export const useVertexGameEngine = () => {
             // Let's re-initialize model with systemInstruction.
 
             const modelWithSystem = genAI.getGenerativeModel({
-                model: "gemini-2.0-flash-exp",
+                model: "gemini-1.5-flash",
                 systemInstruction: SYSTEM_PROMPT,
                 generationConfig: { responseMimeType: "application/json" }
             });
