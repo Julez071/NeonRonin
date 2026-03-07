@@ -142,7 +142,6 @@ function App() {
               <p>It is 2084. Neo-Tokyo is a fortress of etiquette and steel.</p>
               <p>You hold the <strong>SHARD</strong>. You must deliver it to the <strong>CORPORATE CITADEL</strong> (Shibuya Distinct). Be careful not to lose "Face" through bad etiquette.</p>
               <p><strong>MISSION:</strong><br />1. Eat at the Ramen Stand to recharge.<br />2. Take the Subway to Shibuya.<br />3. Infiltrate the Citadel.</p>
-              <p className="text-xs text-zinc-500 pt-4">I am <strong>KAITO</strong>, your AI assistant. I will guide your <em>speech</em>. You must choose your <em>actions</em>.</p>
             </div>
 
             <div className="flex flex-col gap-3 justify-center pt-4">
