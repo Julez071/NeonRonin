@@ -9,10 +9,14 @@ function App() {
   const { processInput, isLoading, error } = useVertexGameEngine();
 
   const [face, setFace] = useState(70);
-  const [inventory, setInventory] = useState<string[]>([]);
+  const [inventory, setInventory] = useState<string[]>(['The Shard']);
+  const [completedMissions, setCompletedMissions] = useState<string[]>([]);
   const [isGameOver, setIsGameOver] = useState(false);
+  const kaitoHelpMessage = `Kaito: I am your neural link assistant. Here to help you navigate Neo-Tokyo. Try typing actions like "look around", or speak to people by typing your exact words like "Hello, what do you sell?". If you ever need these instructions again, just type "help".`;
+
   const [history, setHistory] = useState<GameMessage[]>([
-    { type: 'narrative', content: "You stand before the 'Neon-Ramen' stand. steam rises from the vents, mixing with the holographic rain. A grumpy robot chef with a rusted eye stares at you.\n\n\"WHAT DO YOU WANT?\" he buzzes mechanically." }
+    { type: 'narrative', content: "You stand before the 'Neon-Ramen' stand. steam rises from the vents, mixing with the holographic rain. A grumpy robot chef with a rusted eye stares at you.\n\n\"WHAT DO YOU WANT?\" he buzzes mechanically." },
+    { type: 'sidekick', content: kaitoHelpMessage }
   ]);
 
   // Display errors in the terminal
@@ -28,6 +32,13 @@ function App() {
     // Optimistic User Update
     const userMsg: GameMessage = { type: 'user', content: msg };
     const newHistory = [...history, userMsg];
+
+    if (msg.trim().toLowerCase() === 'help') {
+      const helpResponse: GameMessage = { type: 'sidekick', content: kaitoHelpMessage };
+      setHistory([...newHistory, helpResponse]);
+      return;
+    }
+
     setHistory(newHistory);
 
     // Call Engine
@@ -46,7 +57,7 @@ function App() {
 
       // Game Over
       if (response.game_over) {
-        updates.push({ type: 'system', content: "GAME OVER - CONNECTION TERMINATED" });
+        updates.push({ type: 'system', content: "MISSION ACCOMPLISHED - CONNECTION TERMINATED" });
         setIsGameOver(true);
       }
 
@@ -58,16 +69,27 @@ function App() {
       }
 
       if (response.inventory_update) {
-        // Simple toggle logic or add/remove based on string content?
-        // Prompt says: "Item name to add/remove".
-        // We'll assume if it's already there, remove it? Or just add.
-        // Let's assume add for now, or use logic.
-        // If the string starts with "-" maybe?
-        // For MVP, if it's "Ramen Bowl", we add it.
         setInventory(prev => {
           if (!response.inventory_update) return prev;
-          if (prev.includes(response.inventory_update)) return prev; // No duplicates for now
-          return [...prev, response.inventory_update];
+
+          // If the item starts with '-', remove it. e.g "-The Shard"
+          if (response.inventory_update.startsWith('-')) {
+            const itemToRemove = response.inventory_update.substring(1).trim();
+            return prev.filter(i => i !== itemToRemove);
+          }
+
+          // Otherwise add it
+          const itemToAdd = response.inventory_update.trim();
+          if (prev.includes(itemToAdd)) return prev; // No duplicates
+          return [...prev, itemToAdd];
+        });
+      }
+
+      if (response.mission_stage_update) {
+        setCompletedMissions(prev => {
+          if (!response.mission_stage_update) return prev;
+          if (prev.includes(response.mission_stage_update)) return prev;
+          return [...prev, response.mission_stage_update];
         });
       }
     }
@@ -89,6 +111,7 @@ function App() {
       const state = JSON.parse(saved);
       setFace(state.face);
       setInventory(state.inventory);
+      setCompletedMissions(state.completedMissions || []);
       setHistory(state.history);
       setShowIntro(false);
     }
@@ -103,10 +126,10 @@ function App() {
   // Auto-save on every state change (debounced effectively by react render cycle, but we can just save directly)
   useEffect(() => {
     if (!showIntro) {
-      const state = { face, inventory, history };
+      const state = { face, inventory, completedMissions, history };
       localStorage.setItem('neonRoninState', JSON.stringify(state));
     }
-  }, [face, inventory, history, showIntro]);
+  }, [face, inventory, completedMissions, history, showIntro]);
 
   return (
     <div className="flex flex-col md:flex-row h-[100dvh] w-screen bg-terminal-bg text-neon-green overflow-hidden relative">
@@ -144,7 +167,7 @@ function App() {
       )}
 
       {/* Status Panel (Responsive: Top on mobile, Side on desktop) */}
-      <StatusPanel face={face} inventory={inventory} />
+      <StatusPanel face={face} inventory={inventory} completedMissions={completedMissions} />
 
       {/* Main Area */}
       <div className="flex-1 flex flex-col min-h-0 relative">

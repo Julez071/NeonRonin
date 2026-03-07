@@ -3,6 +3,7 @@ export interface GameState {
     inventory: string[];
     history: GameMessage[];
     isGameOver: boolean;
+    completedMissions: string[];
 }
 
 export interface GameMessage {
@@ -15,5 +16,6 @@ export interface GameResponse {
     sidekick_whisper: string | null;
     face_change: number;
     inventory_update: string | null;
+    mission_stage_update: string | null;
     game_over: boolean;
 }

@@ -4,9 +4,10 @@ import { Shield, Backpack } from 'lucide-react';
 interface StatusPanelProps {
     face: number;
     inventory: string[];
+    completedMissions: string[];
 }
 
-export const StatusPanel: React.FC<StatusPanelProps> = ({ face, inventory }) => {
+export const StatusPanel: React.FC<StatusPanelProps> = ({ face, inventory, completedMissions }) => {
     const isLowFace = face < 30;
 
     return (
@@ -38,13 +39,13 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ face, inventory }) => 
             </div>
 
             {/* Inventory Section */}
-            <div className="flex-1">
+            <div className="flex-1 min-h-[150px]">
                 <div className="flex items-center gap-2 text-cyber-pink mb-2">
                     <Backpack size={20} />
                     <h2 className="text-lg font-bold tracking-wider">INVENTORY</h2>
                 </div>
 
-                <div className="border border-zinc-700 p-3 bg-black/40 min-h-[200px] rounded">
+                <div className="border border-zinc-700 p-3 bg-black/40 h-[150px] overflow-y-auto rounded">
                     {inventory.length === 0 ? (
                         <div className="text-zinc-600 italic text-sm text-center mt-4">
                             -- EMPTY --
@@ -59,6 +60,29 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ face, inventory }) => 
                             ))}
                         </ul>
                     )}
+                </div>
+            </div>
+
+            {/* Mission Status Section */}
+            <div className="flex-1 mt-4 md:mt-0 min-h-[150px]">
+                <div className="flex items-center gap-2 text-cyber-blue mb-2" style={{ color: '#0FF' }}>
+                    {/* Using an inline style or a custom tailwind class if cyan/blue is missing, sticking to standard text-cyan-400 for safety or neon style */}
+                    <div className="w-5 h-5 border border-current flex items-center justify-center text-xs">M</div>
+                    <h2 className="text-lg font-bold tracking-wider text-cyan-400">MISSION STATUS</h2>
+                </div>
+
+                <div className="border border-zinc-700 p-3 bg-black/40 h-[150px] overflow-y-auto rounded">
+                    <ul className="space-y-2">
+                        {['Ramen Shop', 'Subway', 'Citadel'].map((mission) => {
+                            const isCompleted = completedMissions.includes(mission);
+                            return (
+                                <li key={mission} className={`text-sm flex items-start gap-2 ${isCompleted ? 'text-neon-green' : 'text-zinc-500'}`}>
+                                    <span className="shrink-0">{isCompleted ? '[X]' : '[ ]'}</span>
+                                    <span>{mission}</span>
+                                </li>
+                            );
+                        })}
+                    </ul>
                 </div>
             </div>
         </div>
