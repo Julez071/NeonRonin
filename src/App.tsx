@@ -12,7 +12,7 @@ function App() {
   const [inventory, setInventory] = useState<string[]>(['The Shard']);
   const [completedMissions, setCompletedMissions] = useState<string[]>([]);
   const [isGameOver, setIsGameOver] = useState(false);
-  const kaitoHelpMessage = `Kaito: I am your neural link assistant. Here to help you navigate Neo-Tokyo. Try typing actions like "look around", or speak to people by typing your exact words like "Hello, what do you sell?". If you ever need these instructions again, just type "help".`;
+  const kaitoHelpMessage = `I am Kaito, your neural link assistant. Here to help you navigate Neo-Tokyo. Try typing actions like "look around", or speak to people by typing your exact words like "Hello, what do you sell?". If you ever need these instructions again, just type "help".`;
 
   const [history, setHistory] = useState<GameMessage[]>([
     { type: 'narrative', content: "You stand before the 'Neon-Ramen' stand. steam rises from the vents, mixing with the holographic rain. A grumpy robot chef with a rusted eye stares at you.\n\n\"WHAT DO YOU WANT?\" he buzzes mechanically." },
